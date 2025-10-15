@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "id-generator": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
