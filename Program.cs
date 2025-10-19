@@ -4,8 +4,38 @@
     {
         public static void Main(string[] args)
         {
-            var data1 = new DateTime(1000, 01, 02);
+            var generator = new Generator();
+
+            var chave = generator.GerarChave();
+        }
+
+
+    }
+
+    public class Generator
+    {
+        public string GerarChave()
+        {
             var data3 = DateTime.Now;
+            var anoDestino = data3.Year - 1000;
+            var isBisexto = DateTime.IsLeapYear(anoDestino);
+
+            DateTime data1;
+
+            // Verifica se a data original é 29/02
+            if (data3.Month == 2 && data3.Day == 29)
+            {
+                // Se o ano destino for bissexto, mantém 29/02
+                if (isBisexto)
+                    data1 = new DateTime(anoDestino, 2, 29);
+                else
+                    data1 = new DateTime(anoDestino, 2, 28); // fallback seguro
+            }
+            else
+            {
+                // Mantém dia e mês original
+                data1 = new DateTime(anoDestino, data3.Month, 29);
+            }
 
             var timeResult = data3 - data1;
 
@@ -14,16 +44,16 @@
             Console.WriteLine($"Fator {fator}");
 
             var data2 = data1.AddTicks((long)(timeResult.Ticks * fator));
-            
+
             var randPotencia = new Random();
 
-            var potencia = randPotencia.Next(9, 11);
+            var potencia = randPotencia.Next(5, 11);
 
             Console.WriteLine($"Potencia escolhida {potencia}");
 
             var resultPotencia = (long)Math.Pow(data3.Day, potencia);
 
-            Console.WriteLine($"Resultado da potencia.: {-resultPotencia}");
+            Console.WriteLine($"Resultado da potencia.: {resultPotencia}");
             Console.WriteLine($"Resultado do dia {data3.Day} de potencia {potencia} .: {resultPotencia}");
             Console.WriteLine("Data 1 Ticks.: " + data1.Ticks);
             Console.WriteLine("Data 1.: " + data1.ToString("dd/MM/yyyy"));
@@ -40,6 +70,20 @@
             Console.WriteLine("Data 2 Final .: " + data2Final.ToString("dd/MM/yyyy hh:mm:ss"));
 
             Console.WriteLine($"Composição das chaves.: {data1.Ticks} - {data2Final.Ticks} - {data3.Ticks}");
+
+            var chaveFinal = $"{data1.Ticks}{data2.Ticks}{data3.Ticks}";
+            Console.WriteLine($"Chave final.: {chaveFinal}");
+            Console.WriteLine($"Tamanhdo da chave {chaveFinal.Length}");
+
+            return chaveFinal;
         }
+
+
+    }
+
+    public class InstanceManager
+    {
+        
+
     }
 }
