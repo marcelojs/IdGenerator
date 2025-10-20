@@ -6,7 +6,8 @@
         {
             var generator = new Generator();
 
-            var chave = generator.GerarChave();
+            generator.GerarChave();
+            
         }
 
 
@@ -14,9 +15,16 @@
 
     public class Generator
     {
-        public string GerarChave()
+        public long TickDateInicio { get; private set; }
+        public long TickDataMeio { get; private set; }
+        public long TickDataAtual { get; private set; }
+
+        public string? TickFinalProcessado { get; private set; }
+
+        public void GerarChave()
         {
             var data3 = DateTime.Now;
+            data3 = data3.Date;
             var anoDestino = data3.Year - 1000;
             var isBisexto = DateTime.IsLeapYear(anoDestino);
 
@@ -34,7 +42,7 @@
             else
             {
                 // Mantém dia e mês original
-                data1 = new DateTime(anoDestino, data3.Month, 29);
+                data1 = new DateTime(anoDestino, data3.Month, data3.Day);
             }
 
             var timeResult = data3 - data1;
@@ -71,11 +79,13 @@
 
             Console.WriteLine($"Composição das chaves.: {data1.Ticks} - {data2Final.Ticks} - {data3.Ticks}");
 
-            var chaveFinal = $"{data1.Ticks}{data2.Ticks}{data3.Ticks}";
-            Console.WriteLine($"Chave final.: {chaveFinal}");
-            Console.WriteLine($"Tamanhdo da chave {chaveFinal.Length}");
+            TickFinalProcessado = $"{data1.Ticks}{data2.Ticks}{data3.Ticks}";
+            Console.WriteLine($"Chave final.: {TickFinalProcessado}");
+            Console.WriteLine($"Tamanhdo da chave {TickFinalProcessado.Length}");
 
-            return chaveFinal;
+            TickDateInicio = data1.Ticks;
+            TickDataMeio = data2Final.Ticks;
+            TickDataAtual = data3.Ticks;
         }
 
 
