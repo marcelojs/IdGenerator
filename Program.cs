@@ -1,4 +1,6 @@
-﻿namespace id_generator
+﻿using System.Numerics;
+
+namespace id_generator
 {
     public static class Program
     {
@@ -7,37 +9,35 @@
             var generator = new Generator();
 
             generator.GerarChave();
-            RefinarParteFinalChave(generator.TickDataMeio);
-
+            var tick2 = generator.TickDataMeio;
+            var result2 = RefinarParteFinalChave2(tick2);
+            Console.WriteLine(result2);
         }
 
-        public static long RefinarParteFinalChave(long tickFinal)
+        public static long RefinarParteFinalChave2(long tickFinal)
         {
-            long tickRefinado = 0;
-
-            /*
-            double fator1 = rand.NextDouble() + 1.0;
-            double fator2 = rand.NextDouble() + 1.0;
-            double baseComFatores = tickBase * fator1 * fator2;
-            double curvado = Math.Pow(baseComFatores, 1.01);
-            long final = (long)Math.Round(curvado);
-            */
-
             var randFator = new Random();
 
-            var fator1 = randFator.NextDouble() + 1.0;
-            var fator2 = randFator.NextDouble() + 1.0;
+            var fator1 = 1.01 + randFator.NextDouble() * 0.08;
 
-            var baseResultado = tickFinal * fator1 * fator2;
+            var curvatura = Math.Pow(tickFinal * fator1, 1.002);
 
-            var curvatura = Math.Pow(baseResultado, 1.01);
+            var tickRefinado = (long)Math.Round(curvatura);
 
-            tickRefinado = (long)Math.Round(curvatura);
-                
+            if (tickRefinado < 100_000_000_000_000_000)
+                tickRefinado += 100_000_000_000_000_000;
+            else if (tickRefinado > 999_999_999_999_999_999)
+            {
+                // Normaliza para manter 18 dígitos
+                tickRefinado = tickRefinado % 1_000_000_000_000_000_000;
+                if (tickRefinado < 100_000_000_000_000_000)
+                    tickRefinado += 100_000_000_000_000_000;
+            }
+
             return tickRefinado;
         }
 
-        
+
     }
 
     public class Generator
@@ -70,45 +70,45 @@
             var timeResult = data3 - DataInicio;
 
             var fator = new Random().NextDouble();
-
-            Console.WriteLine($"Fator {fator}");
-
             var data2 = DataInicio.AddTicks((long)(timeResult.Ticks * fator));
 
             var randPotencia = new Random();
 
-            var potencia = randPotencia.Next(5, 11);
-
-            Console.WriteLine($"Potencia escolhida {potencia}");
-
+            var potencia = randPotencia.Next(5, 10);
             var resultPotencia = (long)Math.Pow(data3.Day, potencia);
-
-            Console.WriteLine($"Resultado da potencia.: {resultPotencia}");
-            Console.WriteLine($"Resultado do dia {data3.Day} de potencia {potencia} .: {resultPotencia}");
-            Console.WriteLine("Data 1 Ticks.: " + DataInicio.Ticks);
-            Console.WriteLine("Data 1.: " + DataInicio.ToString("dd/MM/yyyy"));
-            Console.WriteLine("Data 3 Ticks.: " + data3.Ticks);
-            Console.WriteLine("Data 3.: " + data3.ToString("dd/MM/yyyy"));
-            Console.WriteLine("Data 2 resultado do calculo entre data1 e data 3");
-            Console.WriteLine("Data 2 Ticks.: " + data2.Ticks);
-            Console.WriteLine("Data 2.: " + data2.ToString("dd/MM/yyyy"));
 
             var tickData2Final = data2.Ticks + resultPotencia;
             var data2Final = new DateTime(tickData2Final, DateTimeKind.Local);
-
-            Console.WriteLine("Data 2 Final Ticks .: " + data2Final.Ticks);
-            Console.WriteLine("Data 2 Final .: " + data2Final.ToString("dd/MM/yyyy hh:mm:ss"));
-
-            Console.WriteLine($"Composição das chaves.: {DataInicio.Ticks} - {data2Final.Ticks} - {data3.Ticks}");
-
-            TickFinalProcessado = $"{DataInicio.Ticks}{data2.Ticks}{data3.Ticks}";
-            Console.WriteLine($"Chave final.: {TickFinalProcessado}");
-            Console.WriteLine($"Tamanhdo da chave {TickFinalProcessado.Length}");
 
             TickDateInicio = DataInicio.Ticks;
             TickDataMeio = data2Final.Ticks;
             TickDataAtual = data3.Ticks;
         }
+
+        public static long AjusteTickPorDataPivo(DateTime dataMeio)
+        {
+            long tick = 0;
+            var dataPivo = DateTime.Now;
+            var anoDestino = dataPivo.Year - 500;
+            var isBisexto = DateTime.IsLeapYear(anoDestino);
+
+            if (dataPivo.Month == 2 && dataPivo.Day == 29)
+            {
+                // Se o ano destino for bissexto, mantém 29/02
+                if (isBisexto)
+                    dataPivo = new DateTime(anoDestino, 2, 29);
+                else
+                    dataPivo = new DateTime(anoDestino, 2, 28); 
+            }
+            else
+                dataPivo = new DateTime(anoDestino, dataPivo.Month, dataPivo.Day);
+
+
+
+            return tick;
+        }
+        
+        
     }
 
     public class InstanceManager
