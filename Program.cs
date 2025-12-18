@@ -86,26 +86,17 @@ namespace id_generator
 
         public long RefinarParteFinalChave2(long tickFinal)
         {
-            var randFator = new Random();
+            var random = new Random();
 
-            var fator1 = 1.01 + randFator.NextDouble() * 0.08;
-
-            var curvatura = Math.Pow(tickFinal * fator1, 1.002);
-
-            var tickRefinado = (long)Math.Round(curvatura);
-
-            if (tickRefinado < 100_000_000_000_000_000)
-                tickRefinado += 100_000_000_000_000_000;
-            else if (tickRefinado > 999_999_999_999_999_999)
-            {
-                // Normaliza para manter 18 dígitos
-                tickRefinado = tickRefinado % 1_000_000_000_000_000_000;
-                if (tickRefinado < 100_000_000_000_000_000)
-                    tickRefinado += 100_000_000_000_000_000;
-            }
-
-            return tickRefinado;
+            var diaRandomico = random.Next(1, 31);
+            var potencia = random.Next(5,10);
+            var resultadoDiaPotencia = Math.Pow(diaRandomico, potencia);
+            var fator  = random.NextDouble();
+            var resultadoPeloFator = fator * resultadoDiaPotencia;
+            var tickFinalRefinado = tickFinal + resultadoPeloFator;
+            return (long)tickFinalRefinado;
         }
+        
 
     }
 
