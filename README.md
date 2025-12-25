@@ -1,2 +1,0 @@
-# IdGenerator
-Gerador de Identificação
