@@ -2,15 +2,15 @@
 
 namespace TimeEntropy
 {
-    internal static class Generator
+    internal class Generator
     {
-        private static readonly Random _random = new Random();
+        private  readonly Random _random = new Random();
 
-        public static Guid Id = Guid.NewGuid();
+        public  Guid Id = Guid.NewGuid();
 
-        public static DateTime DataInicio { get; private set; }
+        public  DateTime DataInicio { get; private set; }
 
-        internal static long GerarChave()
+        internal  long GerarTick()
         {
             Console.WriteLine($"[TimeEntropy] Gerando chave com Id: {Id}");
 
@@ -44,7 +44,7 @@ namespace TimeEntropy
             return tickDataMeio;
         }
 
-        private static DateTime ValidarDataDeAnoBissexto(DateTime dataEmAvaliacao, int anoDestino)
+        private  DateTime ValidarDataDeAnoBissexto(DateTime dataEmAvaliacao, int anoDestino)
         {
             var isBisexto = DateTime.IsLeapYear(anoDestino);
 
@@ -62,7 +62,7 @@ namespace TimeEntropy
             return DataInicio;
         }
 
-        private static long AjusteTickPorDataPivo(DateTime dataMeio, DateTime dataInicio, DateTime dataAtual)
+        private  long AjusteTickPorDataPivo(DateTime dataMeio, DateTime dataInicio, DateTime dataAtual)
         {
             var dataPivo = ValidarDataDeAnoBissexto(dataMeio, DateTime.Now.Year - 500);
 
@@ -71,7 +71,7 @@ namespace TimeEntropy
             return tickFinal;
         }
 
-        private static long RefinarParteFinalChave(DateTime dataPivo, DateTime dataInicio, DateTime dataAtual)
+        private  long RefinarParteFinalChave(DateTime dataPivo, DateTime dataInicio, DateTime dataAtual)
         {
             long tickFinalRefinado;
 

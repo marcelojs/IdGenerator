@@ -7,7 +7,7 @@ namespace TimeEntropyConsoleTest
     {
         public static void Main(string[] args)
         {
-            var teste = TimeEntropyGenerator.GeneratorId();
+            var teste = TimeEntropyGenerator.GeneratorIdDateFullTickTextId();
             Console.WriteLine($"Chave gerada: {teste}");
         }
     }
